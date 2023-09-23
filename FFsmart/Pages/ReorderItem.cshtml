@@ -1,0 +1,31 @@
+﻿@page
+@model FFsmart.Pages.ReorderItemModel
+@{
+}
+
+<p class="h2">Reorder @Model.Item.Name</p>
+<p>For Order #@Model.PendingOrder.Id</p>
+
+<form method="post">
+    <label asp-for="@Model.Item.Id"></label><br>
+    <input asp-for="@Model.Item.Id" type="text" readonly /><br>
+    <span asp-validation-for="@Model.Item.Id" class="text-danger"></span><br>
+
+    <label asp-for="@Model.Item.Name"></label><br>
+    <input asp-for="@Model.Item.Name" type="text" readonly /><br>
+    <span asp-validation-for="@Model.Item.Name" class="text-danger"></span><br>
+
+    <label asp-for="@Model.Item.Weight"></label><br>
+    <input asp-for="@Model.Item.Weight" type="number" step="0.01" /><br>
+    <span asp-validation-for="@Model.Item.Weight" class="text-danger"></span><br>
+        
+    <label asp-for="@Model.Item.OrderId"></label><br>
+    <input asp-for="@Model.Item.OrderId" type="text" readonly /><br>
+    <span asp-validation-for="@Model.Item.OrderId" class="text-danger"></span><br>
+
+    <input class="btn btn-sm btn-success" type="submit" value="Submit" />
+</form>
+
+@section scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

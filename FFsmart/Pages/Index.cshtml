@@ -1,0 +1,27 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+
+<section class="container-fluid primary-bg p-0" style="height: 90vh;">
+    <div class="row h-100">
+        <div class="col-md d-flex align-items-center justify-content-center">
+            <a class="invisible-link" asp-page="/RestaurantIndex">
+                <div class="d-flex flex-column align-items-center justify-content-center text-center rounded rounded-3 secondary-btn" style="width: 19rem; aspect-ratio: 1/1;">
+                    <p class="h1">Restaurant</p>
+                    <p class="display-1"><i class="fa-solid fa-utensils"></i>
+                </div>
+            </a>
+        </div>
+        <div class="col-md d-flex align-items-center justify-content-center">
+            <a class="invisible-link" asp-page="/DeliveryIndex">
+                <div class="d-flex flex-column align-items-center justify-content-center text-center rounded rounded-3 secondary-btn" style="width: 19rem; aspect-ratio: 1/1;">
+                    <p class="h1">Delivery</p>
+                    <p class="display-1"><i class="fa-solid fa-truck-fast"></i></p>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,21 @@
+﻿@page
+@model FFsmart.Pages.ItemModel
+@{
+}
+
+<div class="d-flex flex-wrap">
+@foreach (var item in Model.Items)
+{
+    <div class="mx-2 mb-2 p-3 rounded" style="background: #F0FAFF;">
+        <p class="h6">Item @item.Id</p>
+        <p class="m-0">Name: @item.Name</p>
+        <p class="m-0">Weight: @item.Weight kg</p>
+        <p class="m-0">Expires: @item.ExpirationDate.ToString("dd-MM-yyyy")</p>
+        <p>Delivered: @item.DeliveryDate</p>
+        <div>
+            <a class="btn btn-sm btn-info float-start" asp-page="/UpdateItem" asp-route-id="@item.Id">Update</a>
+            <a class="btn btn-sm btn-danger float-end" asp-page="/Item" asp-route-id="@item.Id" asp-page-handler="Delete">Delete</a>
+        </div>
+    </div>
+}
+</div>

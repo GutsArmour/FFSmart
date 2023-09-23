@@ -1,0 +1,52 @@
+﻿@page
+@model FFsmart.Pages.OrderModel
+@{
+    ViewData["Title"] = "View Order";
+}
+
+<section class="container-fluid p-5" style="height: 90vh;">
+    <div class="row h-100 justify-content-center">
+        <div class="col-md-6 text-center">
+            <p class="h1">Order #@Model.Order.Id</p>
+            <hr />
+            @foreach(var item in Model.OrderItems)
+            {
+                <div class="d-flex bg-light rounded justify-content-evenly align-items-center py-3 px-5 mb-3">
+                    <p class="dark-txt fw-bold m-0">@item.Name</p>
+                    <p class="dark-txt fw-bold m-0">@item.Weight</p>
+                    <div class="d-flex gap-3 align-items-center"> @*make exp date nullable, show form if null and show date if not null*@
+                        <p class="dark-txt fw-bold m-0">@item.ExpirationDate.ToString("dd-MM-yyyy")</p>
+                        <button type="button" class="btn btn-sm btn-info" data-bs-id="@item.Id" data-bs-toggle="modal" data-bs-target="#setDateModal-@item.Id">Set Expiration Date</button>
+                    </div>
+                </div>
+
+                @*Pop-up to set expiration date*@
+                <div class="modal fade" id="setDateModal-@item.Id" tabindex="-1" aria-labelledby="setDateModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="setDateModalLabel">Take Stock from @item.Name</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" asp-page-handler="setDate">
+                                    <input asp-for="@Model.NewExpDate" type="date" />
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <input class="btn btn-sm btn-danger" type="submit" value="Set Date" />
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                Current Date: @DateTime.UtcNow
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+
+            <form asp-page-handler="ConfirmDelivery" asp-route-id="@Model.Order.Id" method="post">
+                <input class="btn btn-lg secondary-btn fw-bold" type="submit" value="Confirm Delivery" />
+            </form>
+        </div>
+    </div>
+</section>

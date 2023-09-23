@@ -1,0 +1,168 @@
+﻿@page
+@model FFsmart.Pages.RestaurantIndexModel
+@{
+    ViewData["Title"] = "Restaurant";
+}
+
+<div class="container-fluid" style="height: 90vh">
+    <div class="row h-100">
+        <section id="item-container" class="col-lg-8 h-100" style="overflow-y: scroll;">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-md-4">
+                    <h1>In-Stock</h1>
+                </div>
+                <div class="col-md-8 d-flex align-items-center gap-3 justify-content-md-end justify-content-center pe-md-5 pb-lg-0 pb-1">
+                    <a class="btn btn-sm secondary-btn" asp-page="/RestaurantIndex">Show All</a>
+                    <a class="btn btn-sm secondary-btn" asp-page="/RestaurantIndex" asp-page-handler="Expired">Expired</a>
+                    <a class="btn btn-sm secondary-btn" asp-page="/RestaurantIndex" asp-page-handler="CloseToExpiry">Close To Expiry</a>
+                    <a class="btn btn-sm secondary-btn" asp-page="/RestaurantIndex" asp-page-handler="LowOnStock">Low On Stock</a>
+                </div>
+            </div>
+            <div class="d-flex flex-wrap justify-content-evenly gap-3">
+                @foreach (var item in Model.Items)
+                {
+                    @if (item.OrderId == 0)
+                    {
+                        <div class="mb-2 p-3 rounded" style="background: #F0FAFF;">
+                            <p class="fw-bold m-0">@item.Name</p>
+                            <p class="m-0">Weight: @item.Weight kg</p>
+                            <p class="m-0">Expires: @item.ExpirationDate.ToString("dd-MM-yyyy")</p>
+                            <p>Delivered: @item.DeliveryDate.ToString("dd-MM-yyyy")</p>
+                            @if ((User.IsInRole("HeadChef") || User.IsInRole("Chef")) && (Model.PendingOrder.Id != 0))
+                            {
+                                <div>
+                                    <button type="button" class="btn btn-sm btn-info" data-bs-id="@item.Id" data-bs-toggle="modal" data-bs-target="#takeStockModal-@item.Id">Take Stock</button>
+                                    <a class="btn btn-sm btn-info float-end" asp-page="/ReorderItem" asp-route-id="@item.Id">Reorder</a>
+                                </div>
+                            }
+                            @if (User.IsInRole("Admin") || User.IsInRole("HeadChef"))
+                            {
+                                <div class="mt-1">
+                                    <a class="btn btn-sm btn-danger" asp-page="/UpdateItem" asp-route-id="@item.Id">Edit</a>
+                                    <a class="btn btn-sm btn-danger float-end" asp-page="/RestaurantIndex" asp-route-id="@item.Id" asp-page-handler="DeleteItem">Delete</a>
+                                </div>
+                            }
+                        </div>
+
+                        @*Pop-up to update stock*@
+                        <div class="modal fade" id="takeStockModal-@item.Id" tabindex="-1" aria-labelledby="takeStockModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="takeStockModalLabel">Take Stock from @item.Name</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="post" asp-page-handler="TakeStock">
+                                            <input asp-for="@Model.ReduceStockBy" type="number" step="0.01" />
+                                            <input type="hidden" name="id" value="@item.Id" />
+                                            <input class="btn btn-sm btn-danger" type="submit" value="Take Stock" />
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        Current Stock: @item.Weight
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </section>
+
+        <section id="item-container" class="col-lg-4 d-flex flex-column justify-content-between h-100 gap-lg-5 mb-3 mt-3 mt-lg-0" style="overflow-y: scroll;">
+            <div>
+                <h2>Pending Order</h2>
+                @if (Model.PendingOrder.Id == 0)
+                {
+                    <p>There is no current pending order. Press "New Order" to create an order for items that needed to be restocked to be added to.</p>
+                }
+                else if (Model.PendingOrderItems.Count == 0)
+                {
+                    <p>There are currently no items in the pending order. Press "Reorder" on the items that need restocking and they will be added to the order. </p>
+                }
+                else
+                {
+                    <div class="my-3 rounded" style="overflow-y: scroll;">
+                        <table class="table table-striped table-light mb-5">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Weight</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.PendingOrderItems != null)
+                                {
+                                    @foreach (var item in Model.PendingOrderItems)
+                                    {
+                                        <tr>
+                                            <td>@item.Name</td>
+                                            <td>@item.Weight kg</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="m-1">
+                    <a id="submit-order" class="btn btn-md secondary-btn fw-bold" asp-page="/RestaurantIndex" asp-page-handler="SubmitOrder">Submit Order</a>
+                </div>
+                <div class="m-1">
+                    <a class="btn btn-md secondary-btn fw-bold" asp-page="/RestaurantIndex" asp-page-handler="CreateOrder">New Order</a>
+                </div>
+                <div class="m-1">
+                    <a class="btn btn-md secondary-btn fw-bold" asp-page="/AddItem">Insert Item</a>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+@if (ViewData["Passcode"] != null)
+{
+    <script type="text/javascript">
+        document.ready = function () {
+            alert('@ViewData["Passcode"]');
+        }
+    </script>
+}
+else
+{
+    @foreach (var item in Model.Items)
+    {
+        @if (item.OrderId == 0)
+        {
+            @if (item.Weight < 5)
+            {
+                <script type="text/javascript">
+                    document.ready = function () {
+                        alert('@item.Name amount is at @item.Weight, click Reorder on the item to add it to order list.');
+                    };
+                </script>
+            }
+
+            @if (item.ExpirationDate < DateTime.UtcNow.AddDays(4) && item.ExpirationDate >= DateTime.UtcNow)
+            {
+                <script type="text/javascript">
+                    document.ready = function () {
+                        alert('@item.Name is close to expiring, click Reorder on the item to add it to order list.');
+                    };
+                </script>
+            }
+
+            @if (item.ExpirationDate < DateTime.UtcNow)
+            {
+                <script type="text/javascript">
+                    document.ready = function () {
+                        alert('@item.Name is expired, click Reorder on the item to add it to order list.');
+                    };
+                </script>
+            }
+        }
+    }
+}

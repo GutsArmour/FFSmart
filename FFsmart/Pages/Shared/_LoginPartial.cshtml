@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using FFsmart.Models
+
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+<div class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="d-flex">
+        @*<a id="manage" class="invisible-link me-3" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"><i class="fa-solid fa-user fa-lg"></i></a>*@
+        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
+                <button id="logout" type="submit" class="invisible-link btn p-0"><i class="fa-solid fa-right-from-bracket fa-lg"></i></button>
+        </form>
+    </div>
+}
+else
+{
+    <div class="d-flex">
+        <a class="invisible-link me-3" id="register" asp-area="Identity" asp-page="/Account/Register"><i class="fa-solid fa-user-plus fa-lg"></i></a>
+        <a class="invisible-link" id=" login" asp-area="Identity" asp-page="/Account/Login"><i class="fa-solid fa-right-to-bracket fa-lg"></i></a>
+    </div>
+}
+</div>

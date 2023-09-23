@@ -1,0 +1,55 @@
+﻿@page
+@model FFsmart.Pages.RecordsModel
+@{
+    ViewData["Title"] = "Records";
+}
+
+<section class="py-3" style="height: 90vh;">
+    <div class="rounded" style="overflow-y: scroll;">
+        <table class="table tabel-striped table-light m-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Item</th>
+                    <th>Action</th>
+                    <th>Weight</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var record in Model.Records)
+                {
+                    <tr>
+                        <td>@record.Id</td>
+                        @foreach (var user in Model.Users)
+                        {
+                            if (user.Id == record.UserId) { <td>@user.UserName</td> }
+                        }
+                        <td>@record.Item</td>
+                        @switch(record.Action)
+                        {
+                            case 0:
+                                <td>Deleted</td>
+                                break;
+                            case 1:
+                                <td>Inserted</td>
+                                break;
+                            case 2:
+                                <td>Reordered</td>
+                                break;
+                            case 3:
+                                <td>Delivered</td>
+                                break;
+                            case 4:
+                                <td>Stock Taken</td>
+                                break;
+                        }
+                        <td>@record.WeightDifference</td>
+                        <td>@record.Created</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

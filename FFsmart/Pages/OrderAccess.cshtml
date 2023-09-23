@@ -1,0 +1,25 @@
+﻿@page
+@model FFsmart.Pages.OrderAccessModel
+@{
+    ViewData["Title"] = "Enter Passcode for Order Access";
+}
+
+<section class="container-fluid d-flex flex-column justify-content-center text-center" style="height: 90vh; width: 20rem;">
+    <p class="h1">Enter Passcode to Access Order #@Model.Order.Id</p>
+    <form method="post">
+        <hr />
+        <div class="form-floating mb-2">
+            <input asp-for="Passcode" type="text" pattern="^[0-9]{9}$" class="form-control" autofocus />
+            <label asp-for="Passcode" class="form-label"></label>
+            <span asp-validation-for="Passcode" class="text-danger bg-white"></span>
+        </div>
+        <input type="hidden" asp-for="OrderId" value="@Model.Order.Id">
+        <div>
+            <button type="submit" class="w-100 secondary-btn btn-lg fw-bold">Enter</button>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

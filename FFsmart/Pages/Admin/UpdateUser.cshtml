@@ -1,0 +1,59 @@
+﻿@page
+@model FFsmart.Pages.UpdateUserModel
+@{
+    ViewData["Title"] = "Update User";
+}
+
+<section class="container-fluid d-flex flex-column justify-content-center text-center" style="height: 90vh; width: 20rem;">
+    <p class="h1 dark-txt my-3">@Model.User.FirstName @Model.User.LastName</p>
+
+    <section class="bg-light p-3 mb-3">
+        <p class="h4">Update Password</p>
+        <form method="post" asp-route-UserID="@Model.UserID" asp-page-handler="Password">
+            <label asp-for="@Model.NewPassword" />
+            <input type="password" asp-for="@Model.NewPassword" />
+            <input class="btn btn-sm btn-danger" type="submit" value="Update" />
+        </form>
+    </section>
+
+    <section class="bg-light p-3 mb-3">
+        <p class="h4">Update Roles</p>
+        <form method="post" asp-route-UserID="@Model.UserID" asp-page-handler="Role">
+            @foreach (var role in Model.Roles)
+            {
+                if (role.NormalizedName == Model.CurrentRole)
+                {
+                    <input type="radio" asp-for="@Model.NewRole" value=@role.Name checked />
+                }
+                else
+                {
+                    <input type="radio" asp-for="@Model.NewRole" value=@role.Name />
+                }
+                <label class="form-check-label" asp-for="@role">@role.Name</label><br />
+            }
+            <input class="btn btn-sm btn-danger" type="submit" value="Update" />
+        </form>
+    </section>
+
+    <section>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal">Delete User</button>
+
+        <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirm User Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure that you want to delete this user? Once the user has been deleted, the user will not be able to be retrieved.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <a class="btn btn-danger" asp-page="/UpdateUser" asp-route-UserID="@Model.UserID" asp-page-handler="Delete">Confirm</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
